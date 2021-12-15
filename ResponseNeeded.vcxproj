@@ -151,7 +151,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="answerCube.cpp" />
+    <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="cubeFactory.cpp" />
+    <ClCompile Include="gun.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="player.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="answerCube.h" />
+    <ClInclude Include="bullet.h" />
+    <ClInclude Include="cubeFactory.h" />
+    <ClInclude Include="gun.h" />
+    <ClInclude Include="player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
