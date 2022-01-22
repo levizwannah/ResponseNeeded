@@ -151,7 +151,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="answerCube.cpp" />
+    <ClCompile Include="cube.cpp" />
+    <ClCompile Include="cubeMover.cpp" />
+    <ClCompile Include="playerLife.cpp" />
+    <ClCompile Include="score.cpp" />
+    <ClCompile Include="targetCube.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="cubeFactory.cpp" />
     <ClCompile Include="gun.cpp" />
@@ -159,7 +163,11 @@
     <ClCompile Include="player.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="answerCube.h" />
+    <ClInclude Include="cube.h" />
+    <ClInclude Include="cubeMover.h" />
+    <ClInclude Include="playerLife.h" />
+    <ClInclude Include="score.h" />
+    <ClInclude Include="targetCube.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="cubeFactory.h" />
     <ClInclude Include="gun.h" />

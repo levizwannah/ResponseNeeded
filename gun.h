@@ -1,6 +1,4 @@
 #pragma once
-class gun :
-    public Gun
-{
-};
+class Gun {
 
+};
