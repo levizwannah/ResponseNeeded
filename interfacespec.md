@@ -1,6 +1,6 @@
 # Interface Specification 
 ## Introduction
-This interface specification will provide an interface between the back end and frontend development. It will help the both teams to code in parallel.  
+This interface specification will provide an interface between the backend and frontend development. It will help the both teams to code in parallel.  
 In this document, the interfaces are methods that will be called for certain purposes and is provided to another team for usage. The consumer of the API need not know the underlying logic of the 
 API.  
 
