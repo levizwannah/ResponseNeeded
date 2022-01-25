@@ -5,11 +5,11 @@
 class Model
 {
 protected:
-	std::vector<double> vertices;
+	std::vector<float> vertices;
 
 public:
 	Model();
-	void setVertices(std::vector<double> vertices);
+	void setVertices(std::vector<float> vertices);
 	bool intersects(Model model);
 	std::string toString();
 

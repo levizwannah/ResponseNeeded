@@ -4,7 +4,7 @@ Model::Model()
 {
 }
 
-void Model::setVertices(std::vector<double> vertices)
+void Model::setVertices(std::vector<float> vertices)
 {
 	this->vertices = vertices;
 }
