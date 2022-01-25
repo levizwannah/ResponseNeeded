@@ -30,11 +30,11 @@ This object is like the escalator, it is always moving and only needs cubes to b
 This is the cube object. The methods to call on this object are:
 1. **`+setColor(color: Color): void`**: Sets the color of the cube.
 2. **`+getColor(): Color`**: Gets the color of the cube
-3. **`+setMainX(x: int): void`**: Sets the main X coordinate of the cube.
-4. **`+getMainX(): int`**: Gets the main X coordinate of the cube.
-5. **`+setMainY(y: int): void`**: Sets the main Y coordinate of the cube.
-6. **`+getMainY(): int`**: Gets the main Y coordinate of the cube.
-7. **`+setMainCoord(x: int, y: int): void`**: Sets the mainXY point of the cube. The mainXY point is the point of the Cube one which every other point(vertex) depends.
+3. **`+setMainX(x: double): void`**: Sets the main X coordinate of the cube.
+4. **`+getMainX(): double`**: Gets the main X coordinate of the cube.
+5. **`+setMainY(y: double): void`**: Sets the main Y coordinate of the cube.
+6. **`+getMainY(): double`**: Gets the main Y coordinate of the cube.
+7. **`+setMainCoord(x: double, y: double): void`**: Sets the mainXY point of the cube. The mainXY point is the point of the Cube one which every other point(vertex) depends.
 8. **`+getId(): int`**: Every cube has an ID and this methods gets the ID of the cube.
 9. **`+explode(): bool`**: Explodes the cube and deletes it, setting it to null.
 

@@ -43,7 +43,11 @@ int main()
     // render loop
    
     while (!glfwWindowShouldClose(window))
-    {
+    { 
+
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
         // input
         processInput(window);
         glfwSwapBuffers(window);
