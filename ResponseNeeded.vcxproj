@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="cubeMover.cpp" />
+    <ClCompile Include="model.cpp" />
     <ClCompile Include="playerLife.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="targetCube.cpp" />
@@ -165,13 +166,21 @@
   <ItemGroup>
     <ClInclude Include="cube.h" />
     <ClInclude Include="cubeMover.h" />
+    <ClInclude Include="model.h" />
     <ClInclude Include="playerLife.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="targetCube.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="cubeFactory.h" />
     <ClInclude Include="gun.h" />
     <ClInclude Include="player.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ResponseNeeded.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="text1.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
