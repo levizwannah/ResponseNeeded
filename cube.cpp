@@ -1,8 +1,9 @@
 #include "cube.h"
 
-Cube::Cube(std::vector<float> vertices) : Model() {
+Cube::Cube(std::vector<float>& vertices) : Model() {
 	this->setVertices(vertices);
-	this->color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	this->setColor(Color::BLUE);
+	this->ID = Cube::currentReadyId;
 }
 
 //@todo
@@ -11,9 +12,27 @@ bool Cube::intersects(Model model) {
 }
 
 //@should update its own color
-void Cube::setColor(glm::vec4 color)
+void Cube::setColor(Color color)
 {
-	this->color = color;
+	glm::vec4 c;
+	switch (color) {
+	case Color::RED:
+		c = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		break;
+	case Color::BLUE:
+		c = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+		break;
+	case Color::GREEN:
+		c = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+		break;
+	case Color::YELLOW:
+		c = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
+		break;
+	default:
+		c = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+	}
+
+	this->color = c;
 }
 
 void Cube::setMainX(double mainX)
@@ -55,4 +74,10 @@ int Cube::getId() {
 //@todo
 bool Cube::explode() {
 	return true;
+}
+
+//operators
+bool operator== (Cube& lhs, Cube& rhs) {
+	if (lhs.ID == rhs.ID) return true;
+	return false;
 }

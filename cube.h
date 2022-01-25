@@ -1,6 +1,6 @@
 #pragma once
 #include "allglm.h"
-
+#include "constants.h"
 #include "model.h"
 class Cube: public Model
 {
@@ -11,9 +11,9 @@ class Cube: public Model
 public:
 	static int currentReadyId;
 
-	Cube(std::vector<float> vertices);
+	Cube(std::vector<float>& vertices);
 	bool intersects(Model model);
-	void setColor(glm::vec4 color);
+	void setColor(Color color);
 	void setMainX(double mainX);
 	double getMainX();
 	void setMainY(double mainY);
@@ -23,5 +23,8 @@ public:
 	void setMainCoord(double x, double y, double z);
 	int getId();
 	bool explode();
+
+	//operators definition
+	friend bool operator== (Cube& lhs, Cube& rhs);
 };
 
