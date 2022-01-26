@@ -24,7 +24,7 @@ int CubeMover::addCube(Cube& cube) {
 
 	this->cubes.push_back(cube);
 
-	//update the mainCoordinates of the cube;
+	//update the mainCoordinates of the cubes;
 	float d = this->interCubeDistance;
 	for (Cube cube : this->cubes) {
 		float theta2 = 2 * sin(d / 2 * this->radius);
