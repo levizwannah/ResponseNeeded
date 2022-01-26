@@ -2,6 +2,7 @@
 
 Model::Model()
 {
+	this->modelMatrix = glm::mat4(1.0f);
 }
 
 void Model::setVertices(std::vector<float> &vertices)

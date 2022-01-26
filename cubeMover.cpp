@@ -1,5 +1,6 @@
 #include "cubeMover.h"
 
+
 CubeMover::CubeMover(float mainX, float mainY, float mainZ, float radius, float speed) {
 	this->mainX = mainX;
 	this->mainY = mainY;
@@ -7,17 +8,33 @@ CubeMover::CubeMover(float mainX, float mainY, float mainZ, float radius, float 
 	this->radius = radius;
 	this->speed = speed;
 	this->generateVertices();
+	this->dTranslationMat = glm::mat4(1.0f);
+	this->interCubeDistance = C_SIDE + 1;
 }
+
+//O(N) complexity actually 2 * N;
+//might have a performance overhead
 
 int CubeMover::addCube(Cube& cube) {
 	for (int i = 0; i < this->cubes.size(); i++) {
 		if (cube == this->cubes[i]) {
-
 			return i;
 		}
 	}
 
 	this->cubes.push_back(cube);
+
+	//update the mainCoordinates of the cube;
+	float d = this->interCubeDistance;
+	for (Cube cube : this->cubes) {
+		float theta2 = 2 * sin(d / 2 * this->radius);
+		float theta1 = std::max(acos((cube.getMainX() - this->mainX) / this->radius), asin((cube.getMainY() - this->mainY) / this->radius));
+		float finalTheta = theta1 + theta2;
+		float newMainX = this->radius * cos(finalTheta) + this->mainX;
+		float newMainY = this->radius * sin(finalTheta) + this->mainY;
+		cube.setMainCoord(newMainX, newMainY, this->mainZ);
+	}
+	
 	return this->cubes.size() - 1;
 }
 
@@ -119,8 +136,8 @@ float CubeMover::getRadius()
 
 void CubeMover::generateVertices() {
 	for (int i = 0; i < 360; i++) {
-		float x = (this->radius * cos(i)) + this->mainX;
-		float y = (this->radius * sin(y)) + this->mainY;
+		float x = (this->radius * cos(i * 180 / PI)) + this->mainX;
+		float y = (this->radius * sin(i * 180 / PI)) + this->mainY;
 		float z = 0.0f;
 		this->vertices.push_back(x);
 		this->vertices.push_back(y);
@@ -130,4 +147,72 @@ void CubeMover::generateVertices() {
 
 std::vector<float> CubeMover::getVertices() {
 	return this->vertices;
+}
+
+void CubeMover::moveAndCheck(int tick, Player& currentPlayer)
+{
+	if (!this->isMoving()) return;
+
+	float circumference = this->getCircumference();
+	float seconds = tick / 1000.0f;
+	float mvDistance = this->speed * R_SPEED * circumference * seconds;
+	float arcAngle = mvDistance / this->radius;
+
+	int loopUntil = this->cubes.size();
+
+	for (int i = 0; i < loopUntil;) {
+
+		Cube* cube = &this->cubes[i];
+
+		//remove cubes that have reached the end of revolution
+		if (cube->getCenterCoord() == this->getRevEndCoord() && cube->isReturning()) {
+
+			//cube checks if it was one of the target cubes
+			if (cube->isTarget() && !cube->wasHit()) {
+				currentPlayer.score--;
+				Player::consecutiveMiss += 1;
+				if (Player::consecutiveMiss % Player::maxConsecutiveMiss == 0) {
+					Player::consecutiveMiss = 0;
+					currentPlayer.life--;
+				}
+			}
+
+			this->remove(i);
+			loopUntil = this->cubes.size();
+			continue;
+		}
+
+		float diffAngle = std::max(
+			asin((cube->getMainY() - this->mainY) / this->radius ),
+			acos ((cube->getMainX() - this->mainX) / this->radius )
+		);
+
+		float finalAngle = diffAngle + arcAngle;
+		float newMainX = this->radius * cos(finalAngle) + this->mainX;
+		float newMainY = this->radius * sin(finalAngle) + this->mainY;
+
+		cube->setMainCoord(newMainX, newMainY, this->mainZ);
+		cube->setReturning(true);
+
+		i++;
+	}
+	
+	
+}
+
+float CubeMover::getCircumference()
+{
+	return 2 * PI * this->radius;
+}
+
+void CubeMover::setRevEndCoord(float x, float y, float z)
+{
+	this->endX = x;
+	this->endY = y;
+	this->endZ = z;
+}
+
+glm::vec3 CubeMover::getRevEndCoord()
+{
+	return glm::vec3(this->endX, this->endY, this->endZ);
 }

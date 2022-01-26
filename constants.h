@@ -3,7 +3,7 @@
 /*
 * Defines the colors for the cubes
 */
-enum Color {
+enum class Color {
 	RED,
 	GREEN,
 	BLUE,
@@ -15,3 +15,4 @@ const int S_HEIGHT = 600; //screen height
 const int C_SIDE = 10; //cube sides
 const float R_SPEED = 0.1f; //revolution per second
 
+double PI = 2 * acos(0.0);

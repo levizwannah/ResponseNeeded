@@ -1,18 +1,26 @@
 #pragma once
 #include "model.h"
 #include "cube.h"
+#include "allglm.h"
 #include <vector>
+#include <cmath>
+#include "player.h"
 
 class CubeMover : public Model
 {
 	std::vector<Cube> cubes;
 	std::vector<float> vertices;
+	glm::mat4 dTranslationMat; //default translation matrix
 	bool moving;
 	float speed;
 	float mainX;
 	float mainY;
 	float radius;
 	float mainZ;
+	float interCubeDistance;
+	float endX;
+	float endY;
+	float endZ;
 
 public:
 	CubeMover(float mainX, float mainY, float mainZ, float radius, float speed);
@@ -39,8 +47,9 @@ public:
 
 	//moves the cube every tick by changing their model based on its translation matrix;
 	//tick is the number of milliseconds since last render
-	void move(int millisecondsSinceLastRender);
-
-	
+	void moveAndCheck(int tick, Player& currentPlayer);
+	float getCircumference();
+	void setRevEndCoord(float x, float y, float z);
+	glm::vec3 getRevEndCoord();
 };
 
