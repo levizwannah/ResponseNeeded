@@ -11,9 +11,11 @@ class CubeMover : public Model
 	float speed;
 	float mainX;
 	float mainY;
-	
+	float radius;
+	float mainZ;
+
 public:
-	CubeMover(float mainX, float mainY, float speed);
+	CubeMover(float mainX, float mainY, float mainZ, float radius, float speed);
 	int addCube(Cube& cube);
 	bool start();
 	bool stop();
@@ -23,13 +25,21 @@ public:
 	void setSpeed(float speed);
 	float getSpeed();
 	bool isMoving();
-	std::vector<Cube> getMovingCubes();
+	std::vector<Cube>& getMovingCubes();
 	void setMainX(float mainX);
 	float getMainX();
 	void setMainY(float mainY);
 	float getMainY();
+	void setMainZ(float mainZ);
+	float getMainZ();
+	void setRadius(float radius);
+	float getRadius();
 	void generateVertices();
 	std::vector<float> getVertices();
+
+	//moves the cube every tick by changing their model based on its translation matrix;
+	//tick is the number of milliseconds since last render
+	void move(int millisecondsSinceLastRender);
 
 	
 };
