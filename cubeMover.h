@@ -21,6 +21,7 @@ class CubeMover : public Model
 	float endX;
 	float endY;
 	float endZ;
+	float angle;
 
 public:
 	CubeMover(float mainX, float mainY, float mainZ, float radius, float speed);

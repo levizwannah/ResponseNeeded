@@ -16,10 +16,13 @@ class CubeFactory
 	std::vector<float> defaultVertices;
 	
 public:
+
 	CubeFactory(glm::mat4& defaultModelMatrix, std::vector<float>& defaultVertices);
 	/*
 	* Ensure you have set the Target Cube Color
 	*/
+	void setTargetNum(int targetNum);
+	int  getTargetNum();
 	void startProduction();
 	void stopProduction();
 	bool isProducing();

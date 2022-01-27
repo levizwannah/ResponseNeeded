@@ -1,5 +1,8 @@
 #include "cube.h"
 
+int Cube::currentReadyId;
+unsigned int Cube::cubeVAO;
+
 Cube::Cube(std::vector<float>& vertices) : Model() {
 	this->setVertices(vertices);
 	this->setColor(Color::BLUE);
@@ -78,10 +81,25 @@ void Cube::setMainCoord(float x, float y, float z) {
 	this->mainX = x;
 	this->mainY = y;
 	this->mainZ = z;
+	std::cout << "CUBE::" << this->ID << "::MAINCOORD::\n";
+	std::cout << "[\n";
+	std::cout << x << ", " << y << ", " << z << "\n";
+	std::cout << "]\n";
 
 	glm::vec3 transVec(x - prevX, y - prevY, z - prevZ);
+	std::cout << "CUBE::" << this->ID << "::TRANSLATE VEC::\n";
+	std::cout << "[\n";
+	std::cout << transVec.x << ", " << transVec.y << ", " << transVec.z << "\n";
+	std::cout << "]\n";
 	//translate model Matrix
 	this->modelMatrix = glm::translate(this->modelMatrix, transVec);
+	std::cout << "CUBE::ID::" << this->ID << "::MODEL MATRIX::SETMAINCOORD::FUNCTION\n";
+	std::cout << "[\n";
+	std::cout << "\t" << this->modelMatrix[0].x << " " << this->modelMatrix[0].y << " " << this->modelMatrix[0].z << " " << this->modelMatrix[0].w << "\n";
+	std::cout << "\t" << this->modelMatrix[1].x << " " << this->modelMatrix[1].y << " " << this->modelMatrix[1].z << " " << this->modelMatrix[1].w << "\n";
+	std::cout << "\t" << this->modelMatrix[2].x << " " << this->modelMatrix[2].y << " " << this->modelMatrix[2].z << " " << this->modelMatrix[2].w << "\n";
+	std::cout << "\t" << this->modelMatrix[3].x << " " << this->modelMatrix[3].y << " " << this->modelMatrix[3].z << " " << this->modelMatrix[3].w << "\n";
+	std::cout << "]\n";
 }
 
 int Cube::getId() {
@@ -101,6 +119,10 @@ bool Cube::isReturning() {
 	return this->returning;
 }
 
+bool Cube::isTarget() {
+	return this->target;
+}
+
 void Cube::hasBeenHit() {
 	this->hit = true;
 }
@@ -118,4 +140,35 @@ bool Cube::explode() {
 bool operator== (Cube& lhs, Cube& rhs) {
 	if (lhs.ID == rhs.ID) return true;
 	return false;
+}
+
+void Cube::render(int tick, Shader& ourShader) {
+	//if we are exploding, then leaving particles and fade
+	std::cout << "RENDERING::CUBE::ID " << this->ID << "\n";
+	//draw on screen
+	ourShader.setVec3("colorOut", this->color);
+
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 projection = glm::mat4(1.0f);
+
+	projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	ourShader.setMat4("projection", projection);
+	ourShader.setMat4("view", view);
+
+	//float angle = 1.0f * tick;
+
+	//this->modelMatrix = glm::rotate(this->modelMatrix, angle, glm::vec3(0.5f, 1.0f, 0.1f));
+	ourShader.setMat4("model", this->modelMatrix);
+
+	/*std::cout << "CUBE::ID::" << this->ID << "::MODEL MATRIX::\n";
+	std::cout << "[\n";
+	std::cout << "\t" << this->modelMatrix[0].x << " " << this->modelMatrix[0].y << " " << this->modelMatrix[0].z << " " << this->modelMatrix[0].w << "\n";
+	std::cout << "\t" << this->modelMatrix[1].x << " " << this->modelMatrix[1].y << " " << this->modelMatrix[1].z << " " << this->modelMatrix[1].w << "\n";
+	std::cout << "\t" << this->modelMatrix[2].x << " " << this->modelMatrix[2].y << " " << this->modelMatrix[2].z << " " << this->modelMatrix[2].w << "\n";
+	std::cout << "\t" << this->modelMatrix[3].x << " " << this->modelMatrix[3].y << " " << this->modelMatrix[3].z << " " << this->modelMatrix[3].w << "\n";
+	std::cout << "]\n";*/
+	// render the cube
+	glBindVertexArray(cubeVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 }

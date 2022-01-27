@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include "allglm.h"
+#include "camera.h"
 
 class Model
 {
@@ -11,6 +12,8 @@ protected:
 	glm::mat3x2 boundingBox;
 
 public:
+	static glm::vec3 lightPos;
+
 	Model();
 	void setVertices(std::vector<float> &vertices);
 	void setModelMatrix(glm::mat4 modelMatrix);

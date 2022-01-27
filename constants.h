@@ -10,9 +10,9 @@ enum class Color {
 	YELLOW
 };
 
-const int S_WIDTH = 800; //screen width
-const int S_HEIGHT = 600; //screen height
+// settings
+const unsigned int SCR_WIDTH = 1000;
+const unsigned int SCR_HEIGHT = 600;
 const int C_SIDE = 10; //cube sides
 const float R_SPEED = 0.1f; //revolution per second
-
-double PI = 2 * acos(0.0);
+const double PI = 2 * acos(0.0);

@@ -10,6 +10,16 @@ CubeFactory::CubeFactory(glm::mat4& defaultModelMatrix, std::vector<float>& defa
     Cube::currentReadyId = 0;
 }
 
+void CubeFactory::setTargetNum(int targetNum)
+{
+    this->targetNum = targetNum;
+}
+
+int CubeFactory::getTargetNum()
+{
+    return this->targetNum;
+}
+
 void CubeFactory::startProduction()
 {
     this->makeCube = true;

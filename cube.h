@@ -2,15 +2,19 @@
 #include "allglm.h"
 #include "constants.h"
 #include "model.h"
+#include "shader.h"
+
 class Cube: public Model
 {
 	glm::vec4 color;
 	float mainX, mainY, mainZ;
 	int ID;
 	bool returning, target, hit;
+	
 
 public:
 	static int currentReadyId;
+	static unsigned int cubeVAO;
 
 	Cube(std::vector<float>& vertices);
 	bool intersects(Model model);
@@ -34,6 +38,7 @@ public:
 	bool isTarget();
 	void hasBeenHit();
 	bool wasHit();
+	void render(int tick, Shader& shader);
 
 	//operators definition
 	friend bool operator== (Cube& lhs, Cube& rhs);

@@ -1,5 +1,7 @@
 #include "model.h"
 
+glm::vec3 Model::lightPos;
+
 Model::Model()
 {
 	this->modelMatrix = glm::mat4(1.0f);
