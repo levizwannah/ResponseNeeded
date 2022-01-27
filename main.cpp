@@ -8,6 +8,8 @@
 #include "shader.h"
 
 #include <iostream>
+#include <vector>
+#include <math.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -16,14 +18,23 @@ void processInput(GLFWwindow* window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+//Sphere Const
+const GLfloat PI = 3.14159265358979323846f;
+
+//Sphere, divide the ball horizontally and vertically into a 500*500 grid
+const int Y_SEGMENTS = 500;
+const int X_SEGMENTS = 500;
+
 int main()
 {
     // glfw: initialize and configure
-
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//Initialize GLFW
+	glfwInit();//Initialize GLFW
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);//opengl version number 3.3
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);// minor version number 3
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);//Use core mode (disordered backward compatibility)
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);//If you are using Mac OS X, you need to add this line
+	glfwWindowHint(GLFW_RESIZABLE, false);//The window size cannot be changed
 
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -48,6 +59,65 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+    std::vector<float> sphereVertices;
+	std::vector<int> sphereIndices;
+
+    /*2-Calculate the vertices of the sphere*/
+	//Generate the vertices of the ball
+	for (int y = 0; y <= Y_SEGMENTS; y++)
+	{
+		for (int x = 0; x <= X_SEGMENTS; x++)
+		{
+			float xSegment = (float)x / (float)X_SEGMENTS;
+			float ySegment = (float)y / (float)Y_SEGMENTS;
+			float xPos = std::cos(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+			float yPos = std::cos(ySegment * PI);
+			float zPos = std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+			sphereVertices.push_back(xPos);
+			sphereVertices.push_back(yPos);
+			sphereVertices.push_back(zPos);
+		}
+	}
+
+	//Indices that generate the ball
+	for (int i = 0; i < Y_SEGMENTS; i++)
+	{
+		for (int j = 0; j < X_SEGMENTS; j++)
+		{
+			sphereIndices.push_back(i * (X_SEGMENTS + 1) + j);
+			sphereIndices.push_back((i + 1) * (X_SEGMENTS + 1) + j);
+			sphereIndices.push_back((i + 1) * (X_SEGMENTS + 1) + j + 1);
+			sphereIndices.push_back(i * (X_SEGMENTS + 1) + j);
+			sphereIndices.push_back((i + 1) * (X_SEGMENTS + 1) + j + 1);
+			sphereIndices.push_back(i * (X_SEGMENTS + 1) + j + 1);
+		}
+	}
+
+	/*3-Data processing*/
+	unsigned int sphereVBO, sphereVAO;
+	glGenVertexArrays(1, &sphereVAO);
+	glGenBuffers(1, &sphereVBO);
+	//Generate and bind the VAO and VBO of the sphere
+	glBindVertexArray(sphereVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, sphereVBO);
+	// Bind the vertex data to the current default buffer
+	glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(float), &sphereVertices[0], GL_STATIC_DRAW);
+
+	GLuint sphere_element_buffer_object;//EBO
+	glGenBuffers(1, &sphere_element_buffer_object);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphere_element_buffer_object);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereIndices.size() * sizeof(int), &sphereIndices[0], GL_STATIC_DRAW);
+
+	//Set the vertex attribute pointer
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	//Unbind VAO and VBO
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+	/*4-shader*/
+	Shader sphereShader("sphereVertexShader.glsl", "sphereFragmentShader.glsl");
 
     // configure global opengl state
     // -----------------------------
@@ -145,6 +215,17 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
 
+        //Activate sphereShader
+        sphereShader.use();
+		//Draw the ball
+		//Turn on face culling (only one face needs to be displayed, otherwise there will be overlap)
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glBindVertexArray(sphereVAO);
+		//Draw using wireframe mode
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDrawElements(GL_TRIANGLES, X_SEGMENTS * Y_SEGMENTS * 6, GL_UNSIGNED_INT, 0);
+
   
         // activate shader
         ourShader.use();
@@ -191,6 +272,12 @@ int main()
     // ------------------------------------------------------------------------
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+
+    	/*6-End*/
+	//Delete sVAO and sVBO, EBO
+	glDeleteVertexArrays(1, &sphereVAO);
+	glDeleteBuffers(1, &sphereVBO);
+	glDeleteBuffers(1, &sphere_element_buffer_object);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
