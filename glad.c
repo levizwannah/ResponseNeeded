@@ -24,6 +24,20 @@
 #include <string.h>
 #include <glad/glad.h>
 
+#include <windows.h>
+
+void left_click()
+{
+    mouse_event(MOUSEEVENTF_LEFTDOWN, x_pos, y_pos, 0, 0);
+    mouse_event(MOUSEEVENTF_LEFLTUP, x_pos, y_pos, 0, 0);
+}
+
+void right_click()
+{
+    mouse_event(MOUSEEVENTF_RIGHTDOWN, x_pos, y_pos, 0, 0);
+    mouse_event(MOUSEEVENTF_RIGHTUP, x_pos, y_pos, 0, 0);
+}
+
 static void* get_proc(const char *namez);
 
 #if defined(_WIN32) || defined(__CYGWIN__)
