@@ -156,9 +156,7 @@ void Cube::render(int tick, Shader& ourShader) {
 	ourShader.setMat4("projection", projection);
 	ourShader.setMat4("view", view);
 
-	//float angle = 1.0f * tick;
-
-	//this->modelMatrix = glm::rotate(this->modelMatrix, angle, glm::vec3(0.5f, 1.0f, 0.1f));
+	this->modelMatrix = glm::rotate(this->modelMatrix, glm::radians(((this->ID % 2 == 0) ? 1 : -1) * (float)tick + 300.0f), glm::vec3(0.5f, 1.0f, 0.1f));
 	ourShader.setMat4("model", this->modelMatrix);
 
 	/*std::cout << "CUBE::ID::" << this->ID << "::MODEL MATRIX::\n";

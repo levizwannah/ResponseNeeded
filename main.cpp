@@ -37,9 +37,6 @@ float lastFrame = 0.0f;
 // lighting
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
-//Sphere Const
-const GLfloat PI = 3.14159265358979323846f;
-
 //Sphere, divide the ball horizontally and vertically into a 500*500 grid
 const int Y_SEGMENTS = 500;
 const int X_SEGMENTS = 500;
@@ -80,7 +77,8 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+
+    //glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     std::vector<float> sphereVertices;
 	std::vector<int> sphereIndices;
 
@@ -119,6 +117,7 @@ int main()
 	unsigned int sphereVBO, sphereVAO;
 	glGenVertexArrays(1, &sphereVAO);
 	glGenBuffers(1, &sphereVBO);
+
 	//Generate and bind the VAO and VBO of the sphere
 	glBindVertexArray(sphereVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, sphereVBO);
@@ -137,8 +136,9 @@ int main()
 	//Unbind VAO and VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
 	/*4-shader*/
-	Shader sphereShader("sphereVertexShader.glsl", "sphereFragmentShader.glsl");
+	Shader sphereShader("shaders/sphereVertexShader.glsl", "shaders/sphereFragmentShader.glsl");
 
     // configure global opengl state
     // -----------------------------
@@ -207,9 +207,10 @@ int main()
 
 
     //number of cubes per target
-    const int NUM_CUBES_PER_TARGET = 1;
+    const int NUM_CUBES_PER_TARGET = 10;
     const glm::vec4 BACKGROUND_COLOR(0.98f, 0.988f, 0.87f, 1.0f);
     glm::mat4 dModelMat(1.0f);
+    dModelMat = glm::scale(dModelMat, glm::vec3(0.5f, 0.5f, 0.5f));
     std::vector<Cube> cubeInventory;
     Cube::cubeVAO = cubeVAO;
 
@@ -217,14 +218,19 @@ int main()
     cubeFactory.setTargetNum(NUM_CUBES_PER_TARGET);
     cubeFactory.startProduction();
 
-    CubeMover cubeMover(0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-    cubeMover.setRevEndCoord(cubeMover.getVertices()[0], cubeMover.getVertices()[1], cubeMover.getVertices()[2]);
+    CubeMover cubeMover(-5.0f, 0.0f, 0.0f, 5.0f, 1.0f);
+    cubeMover.setEndCoord(abs(cubeMover.getMainX()) + cubeMover.getLength(), cubeMover.getMainY(), cubeMover.getMainZ());
 
     Player::consecutiveMiss = 0;
     Player::maxConsecutiveMiss = 10;
 
     Player currentPlayer;
     cubeMover.start();
+
+    double lastTime = glfwGetTime(), timer = lastTime;
+    double deltaTime = 0, nowTime = 0;
+    int frames = 0, updates = 0;
+
 
     int i = 0;
     // render loop
@@ -242,19 +248,19 @@ int main()
 
         // render
         // ------
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.2f, 0.3f, 0.3f, 0.001f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
 
         //Activate sphereShader
-        sphereShader.use();
+        //sphereShader.use();
 		//Draw the ball
 		//Turn on face culling (only one face needs to be displayed, otherwise there will be overlap)
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glBindVertexArray(sphereVAO);
+		//glEnable(GL_CULL_FACE);
+		//glCullFace(GL_BACK);
+		//glBindVertexArray(sphereVAO);
 		//Draw using wireframe mode
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glDrawElements(GL_TRIANGLES, X_SEGMENTS * Y_SEGMENTS * 6, GL_UNSIGNED_INT, 0);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glDrawElements(GL_TRIANGLES, X_SEGMENTS * Y_SEGMENTS * 6, GL_UNSIGNED_INT, 0);
 
   
         // activate shader
@@ -274,11 +280,22 @@ int main()
             cubeMover.addCube(newCube);
             cubeInventory.pop_back();
         }
-
         
-        //move the cubes based on time
-        cubeMover.moveAndCheck(glfwGetTime(), currentPlayer);
 
+        // - Measure time
+        nowTime = glfwGetTime();
+        deltaTime += (nowTime - lastTime) / FRAME_PER_SECOND;
+        lastTime = nowTime;
+        cubeMover.moveAndCheck(frames, currentPlayer);
+
+        //// - Only update at 60 frames / s
+        //while (deltaTime >= 1.0) {
+        //    //move the cubes based on time
+        //    cubeMover.moveAndCheck(frames , currentPlayer);
+        //    updates++;
+        //    deltaTime--;
+        //}
+        
         //draw
         ourShader.use();
 
@@ -295,10 +312,8 @@ int main()
         ourShader.setMat4("view", view);
         
         for (Cube c : cubeMover.getMovingCubes()) {
-            c.render(glfwGetTime(), ourShader);
+            c.render(frames, ourShader);
         }
-        
-
 
 
         glm::mat4 model = glm::mat4(1.0f);
@@ -316,6 +331,15 @@ int main()
         glfwPollEvents();
         //if (i == 10) break;
         i++;
+
+        frames++;
+
+        // - Reset after one second
+        /*if (glfwGetTime() - timer > 1.0) {
+            timer++;
+            std::cout << "FPS: " << frames << " Updates:" << updates << std::endl;
+            updates = 0, frames = 0;
+        }*/
 
     }
 
