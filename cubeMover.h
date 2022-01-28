@@ -15,16 +15,15 @@ class CubeMover : public Model
 	float speed;
 	float mainX;
 	float mainY;
-	float radius;
+	float length;
 	float mainZ;
 	float interCubeDistance;
 	float endX;
 	float endY;
 	float endZ;
-	float angle;
 
 public:
-	CubeMover(float mainX, float mainY, float mainZ, float radius, float speed);
+	CubeMover(float mainX, float mainY, float mainZ, float length, float speed);
 	int addCube(Cube& cube);
 	bool start();
 	bool stop();
@@ -41,16 +40,13 @@ public:
 	float getMainY();
 	void setMainZ(float mainZ);
 	float getMainZ();
-	void setRadius(float radius);
-	float getRadius();
-	void generateVertices();
-	std::vector<float> getVertices();
+	void setLength(float length);
+	float getLength();
 
 	//moves the cube every tick by changing their model based on its translation matrix;
 	//tick is the number of milliseconds since last render
 	void moveAndCheck(int tick, Player& currentPlayer);
-	float getCircumference();
-	void setRevEndCoord(float x, float y, float z);
-	glm::vec3 getRevEndCoord();
+	void setEndCoord(float x, float y, float z);
+	glm::vec3 getEndCoord();
 };
 
