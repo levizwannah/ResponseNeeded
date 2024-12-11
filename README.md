@@ -1,2 +1,2 @@
 # ResponseNeeded
-A Game for learning
+A Game for improving focus and increasing multitasking abilities
